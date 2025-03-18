@@ -1,35 +1,13 @@
-
-from flask import Flask, abort
-from flask_sqlalchemy import SQLAlchemy
-
-from flask_restful import Resource, Api, reqparse, fields, marshal_with
-
-from status_enum import Status
-
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres.priixfefmlsfneulxpna:yJ0aygmzdpNWiOy5@aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres'
-
-
-
-db = SQLAlchemy(app)
-api = Api(app)
-
-
-
-# task model
-class TaskModel(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    task_name = db.Column(db.String(80), nullable=False)
-    status = db.Column(db.String(80), nullable=False)
-
-    def __repr__(self):
-        return f"Task(task_name = {self.task_name}, status = {self.status})"
+from flask import abort
+from flask_restful import Resource, reqparse, fields, marshal_with
+from models import TaskModel
+from extensions import db
+from enums.status_enum import Status
 
 # will use this to validate when receiving request
 task_args = reqparse.RequestParser()
 task_args.add_argument('task_name', type=str, required=True, help="Task cannot be blank")
 task_args.add_argument('status', type=str, required=True, help="Status cannot be blank")
-
 
 # prepare format
 taskFields = {
@@ -45,6 +23,7 @@ class Tasks(Resource):
     # get method
     @marshal_with(taskFields)
     def get(self):
+        print("hello")
         tasks = TaskModel.query.all()
         return tasks
 
@@ -100,18 +79,3 @@ class Task(Resource):
 
         tasks = TaskModel.query.all()
         return tasks, 200
-    
-# tasks api
-api.add_resource(Tasks, '/api/tasks/')
-api.add_resource(Task, '/api/tasks/<int:id>')
-
-@app.route('/')
-def home():
-    return '<h1>Hi</h1>'
-
-
-with app.app_context():
-    db.create_all()
-
-if __name__ == '__main__':
-    app.run(debug=True)
