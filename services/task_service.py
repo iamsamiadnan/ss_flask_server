@@ -31,6 +31,13 @@ class Tasks(Resource):
     def post(self):
         args = task_args.parse_args()
         task = TaskModel(task_name = args["task_name"], status = args["status"])
+
+        
+        if(args["task_name"] == ''):
+            tasks = TaskModel.query.order_by(TaskModel.id.desc()).all()
+            return tasks, 201
+
+
         db.session.add(task)
         db.session.commit()
         tasks = TaskModel.query.order_by(TaskModel.id.desc()).all()
@@ -57,7 +64,7 @@ class Task(Resource):
         if not task:
             abort(404, "Task not found")
         
-        # only allows 'not started', 'in progress' and 'done'
+        # only allows 'pending' and 'done'
         if(args["status"].upper() not in Status._value2member_map_):
             abort(400)
             
