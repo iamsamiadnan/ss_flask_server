@@ -1,4 +1,4 @@
-# Taskify - Frontend
+# Taskify
 
 Live Link: https://shera-nextjs-app.vercel.app/
 
