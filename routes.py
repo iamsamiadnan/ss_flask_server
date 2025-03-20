@@ -6,4 +6,4 @@ main = Blueprint('main', __name__)
 api = Api(main)
 
 api.add_resource(Tasks, '/api/tasks/')
-api.add_resource(Task, '/api/tasks/<int:id>')
+api.add_resource(Task, '/api/tasks/<int:id>/')

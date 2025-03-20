@@ -23,8 +23,7 @@ class Tasks(Resource):
     # get method
     @marshal_with(taskFields)
     def get(self):
-        print("hello")
-        tasks = TaskModel.query.all()
+        tasks = TaskModel.query.order_by(TaskModel.id.desc()).all()
         return tasks
 
     # post method
@@ -34,7 +33,7 @@ class Tasks(Resource):
         task = TaskModel(task_name = args["task_name"], status = args["status"])
         db.session.add(task)
         db.session.commit()
-        tasks = TaskModel.query.all()
+        tasks = TaskModel.query.order_by(TaskModel.id.desc()).all()
         return tasks, 201
     
 class Task(Resource):
@@ -66,7 +65,8 @@ class Task(Resource):
 
         db.session.commit()
 
-        return task
+        tasks = TaskModel.query.order_by(TaskModel.id.desc()).all()
+        return tasks, 200
     
     @marshal_with(taskFields)
     def delete(self, id):
@@ -77,5 +77,5 @@ class Task(Resource):
         db.session.delete(task)
         db.session.commit()
 
-        tasks = TaskModel.query.all()
+        tasks = TaskModel.query.order_by(TaskModel.id.desc()).all()
         return tasks, 200
