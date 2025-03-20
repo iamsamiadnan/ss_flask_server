@@ -1,4 +1,4 @@
-from flask import abort
+from flask import abort, request
 from flask_restful import Resource, reqparse, fields, marshal_with
 from models import TaskModel
 from extensions import db
@@ -23,6 +23,13 @@ class Tasks(Resource):
     # get method
     @marshal_with(taskFields)
     def get(self):
+        status = request.args.get("status") # ?status=pending or ?status=done
+        arg_status = str(status).upper()
+
+        if(arg_status in Status._value2member_map_):
+            tasks = TaskModel.query.filter_by(status=arg_status).order_by(TaskModel.id.desc()).all()
+            return tasks
+
         tasks = TaskModel.query.order_by(TaskModel.id.desc()).all()
         return tasks
 
