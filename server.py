@@ -1,3 +1,4 @@
+import utils.session
 from flask import Flask
 from extensions import db
 from routes import main
