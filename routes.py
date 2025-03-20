@@ -1,4 +1,4 @@
-from flask import Blueprint, make_response
+from flask import Blueprint
 from services import Task, Tasks
 from flask_restful import Api
 
